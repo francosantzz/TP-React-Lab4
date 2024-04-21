@@ -1,14 +1,16 @@
 
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import MobileStepper from '@mui/material/MobileStepper';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import SwipeableViews from 'react-swipeable-views';
 import { autoPlay } from 'react-swipeable-views-utils';
+
+import Box from '@mui/material/Box';
+
+import Button from '@mui/material/Button';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
@@ -45,6 +47,7 @@ export const Carrusel = () => {
   const handleStepChange = (step: number) => {
     setActiveStep(step);
   };
+  
 
   return (
     <Box sx={{ width: '100%', flexGrow: 1, margin: '0 auto'  }}>
@@ -61,6 +64,7 @@ export const Carrusel = () => {
       >
       </Paper>
       <AutoPlaySwipeableViews
+        interval={5000}
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={activeStep}
         onChangeIndex={handleStepChange}
