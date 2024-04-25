@@ -15,7 +15,7 @@ export const Instrumento: React.FC<InstrumentoProps> = ({ item }) => (
     <CardContent sx={{ flex: '1 0 auto' }}>
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <Typography variant="body2" color="text.primary" fontFamily={"Roboto"} fontSize={"20px"}>
+          <Typography variant="body2" color="text.primary" fontFamily={"Roboto"} fontSize={"17px"}>
             <h2>{item.instrumento}</h2>
           </Typography> 
         </Grid>
