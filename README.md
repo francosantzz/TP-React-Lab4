@@ -1,3 +1,6 @@
+# Importante !!!
+Este projecto utiliza unas dependincias para versiones de react hasta la versión 17.0.0, de no funcionar el comando "npm install", sugiero utilizar el comando "npm run i", y así se asegurará de instalar todas las dependencias necesarias
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
