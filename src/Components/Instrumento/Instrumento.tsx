@@ -1,21 +1,20 @@
 import * as React from 'react';
 import { InstrumentoProps } from "../../Types/InstrumentoProps";
-import { Button, Card, CardActions, CardContent, CardMedia, Grid, Typography } from '@mui/material';
+import { Button, CardActions, CardContent, CardMedia, Grid, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-export const Instrumento: React.FC<InstrumentoProps> = ({ item }) => (
-  <Card variant="outlined" sx={{ marginTop: '2%', marginLeft: '8%', marginRight: '8%',
-  boxShadow: 6, display: 'flex'}}>
+export const InstrumentoCard: React.FC<InstrumentoProps> = ({ item }) => (
+  <>
     <CardMedia
       component="img"
       sx={{ width: 350, flexShrink: 0, objectFit: 'cover'  }}
-      image={`/img/${item.imagen}`}
+      image={`${item.imagen}`}
       alt={item.instrumento}
     />
     <CardContent sx={{ flex: '1 0 auto' }}>
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          <Typography variant="body2" color="text.primary" fontFamily={"Roboto"} fontSize={"17px"}>
+          <Typography variant="body2" color="text.primary" fontFamily={"Roboto"} fontSize={"17px"} maxWidth={"50vw"}>
             <h2>{item.instrumento}</h2>
           </Typography> 
         </Grid>
@@ -55,5 +54,5 @@ export const Instrumento: React.FC<InstrumentoProps> = ({ item }) => (
         </Link>
       </CardActions>
     </CardContent>
-  </Card>
+    </>
 );

@@ -9,7 +9,7 @@ export const InstrumentoCompleto: React.FC<InstrumentoProps> = ({ item }) => (
       <CardMedia
         component="img"
         sx={{ width: 500, flexShrink: 0, marginLeft:'15%'}}
-        image={`/img/${item.imagen}`}
+        image={`${item.imagen}`}
         alt={item.instrumento}
       />
       <CardContent>
