@@ -11,7 +11,7 @@ export const Productos = () => {
   const [open, setOpen] = React.useState(false);
   const [selectedInstrumento, setselectedInstrumento] = useState<Instrumento | undefined>(undefined);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [selectedCategoria, setSelectedCategoria] = useState<string>("");
+  const [selectedCategoria, setSelectedCategoria] = useState<string>("todos");
 
   useEffect(() => {
     async function getDataCategorias() {
@@ -51,7 +51,7 @@ export const Productos = () => {
     };
 
     fetchData();
-  }, [data]);
+  }, []);
 
   return (
     <>
@@ -83,9 +83,9 @@ export const Productos = () => {
 
       {data.filter((item: Instrumento) => selectedCategoria === "todos" || item.categoria?.id?.toString() === selectedCategoria).map((item: Instrumento) => (
         <>
-          <Card key={item.id} variant="outlined" sx={{ maxWidth: 1200, margin: "20px", display: 'flex' }}>
+          <Card key={item.id} variant="outlined" sx={{ maxWidth: 1300, margin: "20px", display: 'flex' }}>
             <InstrumentoCard key={item.id} item={item} />
-            <Button
+            <Button style={{marginLeft: 10}}
               onClick={() => {
                 handleSelection(item);
                 handleOpen();
@@ -93,7 +93,7 @@ export const Productos = () => {
             >
               Editar
             </Button>
-            <Button
+            <Button style={{margin: 10}}
               onClick={() => {
                 handleDelete(item);
               }}

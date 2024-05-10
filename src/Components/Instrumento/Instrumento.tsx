@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { InstrumentoProps } from "../../Types/InstrumentoProps";
-import { Button, CardActions, CardContent, CardMedia, Grid, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardMedia, Grid, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 export const InstrumentoCard: React.FC<InstrumentoProps> = ({ item }) => (
-  <>
+  <Card variant="outlined" sx={{ marginTop: '2%', marginLeft: '2%', marginBottom: '2%',
+  boxShadow: 3, display: 'flex'}}>
     <CardMedia
       component="img"
-      sx={{ width: 350, flexShrink: 0, objectFit: 'cover'  }}
+      sx={{ maxWidth: 350, flexShrink: 0, objectFit: 'cover'  }}
       image={`${item.imagen}`}
       alt={item.instrumento}
     />
@@ -54,5 +55,5 @@ export const InstrumentoCard: React.FC<InstrumentoProps> = ({ item }) => (
         </Link>
       </CardActions>
     </CardContent>
-    </>
+  </Card>
 );
