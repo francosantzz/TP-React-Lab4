@@ -9,6 +9,7 @@ export interface InstrumentoProps{
         costoEnvio: string;
         cantidadVendida: string;
         descripcion: string;
+        categoria: Categoria | null;
     }
     
 }
@@ -28,4 +29,16 @@ export interface Instrumento {
     cantidadVendida: string;
     descripcion: string;
     categoria: Categoria | null;
+}
+export interface Pedido {
+    id?: number;
+    fechaPedido: Date;
+    totalPedido: number;
+    detalles: PedidoDetalle[];
+}
+
+export interface PedidoDetalle {
+    id?: number;
+    cantidad: number;
+    instrumento: Instrumento;
 }

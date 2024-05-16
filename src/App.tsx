@@ -1,8 +1,11 @@
 import { Rutas } from "./Rutas/Rutas";
+import { CarritoProvider } from "./Context/CarritoProvider";
 
 function App() {
   return (
-    <Rutas/>
+    <CarritoProvider>
+      <Rutas/>
+    </CarritoProvider>
   );
 }
 

@@ -18,6 +18,7 @@ const Navbar = () => {
           <Tab label="Home" component={Link} to="/" />
           <Tab label="Productos" component={Link} to="/productos" />
           <Tab label="Donde Estamos" component={Link} to="/donde-estamos" />
+          <Tab label="Carrito" component={Link} to="/carrito" />
         </Tabs>
       </Box>
     </>

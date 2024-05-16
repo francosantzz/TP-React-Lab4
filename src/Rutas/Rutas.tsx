@@ -3,6 +3,7 @@ import { Home } from '../Screens/Home/Home';
 import { DondeEstamos } from '../Screens/DondeEstamos/DondeEstamos';
 import { Productos } from '../Screens/Productos/Productos';
 import { DetalleInstrumento } from '../Screens/DetalleInstrumento/DetalleInstrumento';
+import { Carrito } from '../Screens/Carrito';
 import Navbar from '../Components/Navbar/Navbar';
 
 export const Rutas = () => (
@@ -14,6 +15,7 @@ export const Rutas = () => (
         <Route path="/donde-estamos" element={<DondeEstamos />} />
         <Route path="/productos" element={<Productos />} />
         <Route path="/instrumento/:id" element={<DetalleInstrumento />} />
+        <Route path="/carrito" element={<Carrito/>}/>
       </Routes>
     </div>
   </Router>
