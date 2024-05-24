@@ -1,15 +1,17 @@
 
 import { InstrumentoProps } from "../../Types/InstrumentoProps";
-import { Button, Card, CardActions, CardContent, CardMedia, Grid, Snackbar,  Typography } from '@mui/material';
+import { Card, CardContent, CardMedia, Grid, Snackbar,  Typography, IconButton } from '@mui/material';
 import React, { useContext, useState } from 'react';
 import { CarritoContext } from '../../Context/CarritoContext';
+import { Add, Remove } from '@mui/icons-material';
 
 export const InstrumentoCompleto: React.FC<InstrumentoProps> = ({ item }) => {
-
-  const { agregarAlCarrito } = useContext(CarritoContext);
+  const { agregarAlCarrito, reducirCantidadCarrito, obtenerCantidadEnCarrito } = useContext(CarritoContext);
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleAddToCart = () => {
+    console.log("hola");
+    
     agregarAlCarrito(item);
     setOpenSnackbar(true);
   };
@@ -91,13 +93,29 @@ return (
                 </Grid>
               )}
             </Grid>
-            <CardActions>
-              <Button variant="outlined" size="medium" color="primary"  onClick={handleAddToCart}>
-                <Typography variant='button'>
-                  Agregar al carrito
+            <Grid container spacing={2} alignItems="center">
+              <Grid item>
+                <IconButton
+                  color="primary"
+                  onClick={() => reducirCantidadCarrito(item.id)}
+                >
+                  <Remove />
+                </IconButton>
+              </Grid>
+              <Grid item>
+                <Typography variant="body1">
+                  {obtenerCantidadEnCarrito(item.id)}
                 </Typography>
-              </Button>
-            </CardActions>
+              </Grid>
+              <Grid item>
+                <IconButton
+                  color="primary"
+                  onClick={handleAddToCart}
+                >
+                  <Add />
+                </IconButton>
+              </Grid>
+            </Grid>
           </CardContent>
         </Card>
       </Grid>

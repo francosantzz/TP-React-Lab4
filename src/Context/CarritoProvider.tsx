@@ -38,9 +38,31 @@ export const CarritoProvider: React.FC<CarritoProviderProps> = ({ children }) =>
     setCarrito(carrito.filter(item => item.id !== id));
   };
 
+  const reducirCantidadCarrito = (id: number) => {
+    const itemEnCarrito = carrito.find((i) => i.id === id);
+    if (itemEnCarrito) {
+      if (itemEnCarrito.cantidad > 1) {
+        setCarrito(carrito.map((i) => i.id === id ? { ...i, cantidad: i.cantidad - 1 } : i));
+      } else {
+        setCarrito(carrito.filter((i) => i.id !== id));
+      }
+    }
+  };
+
+  const obtenerCantidadEnCarrito = (id: number) => {
+    const itemEnCarrito = carrito.find((i) => i.id === id);
+    return itemEnCarrito ? itemEnCarrito.cantidad : 0;
+  };
+
+  const vaciarCarrito = () => {
+    setCarrito([]);
+  };
+
   return (
-    <CarritoContext.Provider value={{ carrito, agregarAlCarrito, eliminarDelCarrito }}>
+    <CarritoContext.Provider value={{ carrito, agregarAlCarrito, eliminarDelCarrito, reducirCantidadCarrito, vaciarCarrito, obtenerCantidadEnCarrito }}>
       {children}
     </CarritoContext.Provider>
   );
 };
+
+export type { CarritoProviderProps };

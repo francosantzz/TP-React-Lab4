@@ -18,7 +18,7 @@ export interface Categoria {
     denominacion: string;
 }
 
-export interface Instrumento {
+export interface InstrumentoNoItem {
     id: number;
     instrumento: string;
     marca: string;
@@ -40,5 +40,6 @@ export interface Pedido {
 export interface PedidoDetalle {
     id?: number;
     cantidad: number;
-    instrumento: Instrumento;
+    instrumento: InstrumentoNoItem;
+    pedido: { id: number };
 }
