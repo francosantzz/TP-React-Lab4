@@ -3,16 +3,17 @@ import { InstrumentoProps } from "../../Types/InstrumentoProps";
 import { Button, Card, CardActions, CardContent, CardMedia, Grid, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 
+
+
 export const InstrumentoCard: React.FC<InstrumentoProps> = ({ item }) => (
-  <Card variant="outlined" sx={{ marginTop: '2%', marginLeft: '2%', marginBottom: '2%',
-  boxShadow: 3, display: 'flex'}}>
+  <Card variant="outlined" sx={{margin: "2%", boxShadow: 3, display: 'flex'}}>
     <CardMedia
       component="img"
-      sx={{ maxWidth: 350, flexShrink: 0, objectFit: 'cover'  }}
+      sx={{ width: 350, flexShrink: 0, objectFit: 'cover'  }}
       image={`${item.imagen}`}
       alt={item.instrumento}
     />
-    <CardContent sx={{ flex: '1 0 auto' }}>
+    <CardContent sx={{ flex: '1 0' }}>
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <Typography variant="body2" color="text.primary" fontFamily={"Roboto"} fontSize={"17px"} maxWidth={"50vw"}>
@@ -52,6 +53,7 @@ export const InstrumentoCard: React.FC<InstrumentoProps> = ({ item }) => (
           <Button variant="contained" size="small" color="primary">
             Ver Detalle
           </Button>
+          
         </Link>
       </CardActions>
     </CardContent>

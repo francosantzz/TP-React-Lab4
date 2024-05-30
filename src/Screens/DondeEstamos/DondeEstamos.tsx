@@ -1,5 +1,5 @@
 
-export const DondeEstamos = () => {
+const DondeEstamos = () => {
   return (
     <>
       <div className="map">
@@ -9,3 +9,4 @@ export const DondeEstamos = () => {
     </>
   )
 }
+export default DondeEstamos;

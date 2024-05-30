@@ -4,9 +4,12 @@ import { Card, CardContent, CardMedia, Grid, Snackbar,  Typography, IconButton }
 import React, { useContext, useState } from 'react';
 import { CarritoContext } from '../../Context/CarritoContext';
 import { Add, Remove } from '@mui/icons-material';
+import { useAuth } from "../../Context/AuthContext";
 
 export const InstrumentoCompleto: React.FC<InstrumentoProps> = ({ item }) => {
   const { agregarAlCarrito, reducirCantidadCarrito, obtenerCantidadEnCarrito } = useContext(CarritoContext);
+  const { isLoggedIn } = useAuth();
+
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleAddToCart = () => {
@@ -98,6 +101,7 @@ return (
                 <IconButton
                   color="primary"
                   onClick={() => reducirCantidadCarrito(item.id)}
+                  disabled={!isLoggedIn}
                 >
                   <Remove />
                 </IconButton>
@@ -111,6 +115,7 @@ return (
                 <IconButton
                   color="primary"
                   onClick={handleAddToCart}
+                  disabled={!isLoggedIn}
                 >
                   <Add />
                 </IconButton>

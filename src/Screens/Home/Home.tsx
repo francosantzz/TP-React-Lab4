@@ -1,6 +1,6 @@
 import { Carrusel } from "../../Components/Carrusel/Carrusel"
 
-export const Home = () => {
+const Home = () => {
   return (
     <>
         <h1 style={{ fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'}}>Musical Hendrix</h1>
@@ -13,3 +13,4 @@ export const Home = () => {
     </>
   )
 }
+export default Home;

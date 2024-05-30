@@ -10,7 +10,8 @@ export interface InstrumentoProps{
         cantidadVendida: string;
         descripcion: string;
         categoria: Categoria | null;
-    }
+    },
+    
     
 }
 export interface Categoria {

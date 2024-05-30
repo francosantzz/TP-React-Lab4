@@ -5,13 +5,16 @@ import React from "react";
 import { ModalInstrumento } from "../../Components/ModalInstrumento";
 import { Categoria, Instrumento } from "../../Types/InstrumentoProps";
 import { deleteData, getData } from "../../api/genericCalls";
+import { useAuth } from "../../Context/AuthContext";
+import FadeInContent from "../FadeInContent";
 
-export const Productos = () => {
+const Productos: React.FC = () => {
   const [data, setData] = useState<Instrumento[]>([]);
   const [open, setOpen] = React.useState(false);
   const [selectedInstrumento, setselectedInstrumento] = useState<Instrumento | undefined>(undefined);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [selectedCategoria, setSelectedCategoria] = useState<string>("todos");
+  const { role } = useAuth();
 
   useEffect(() => {
     async function getDataCategorias() {
@@ -54,7 +57,9 @@ export const Productos = () => {
   }, []);
 
   return (
+    <FadeInContent>
     <>
+    {role === 'Admin' && (
       <Button
         sx={{ margin: "25px" }}
         onClick={() => {
@@ -64,7 +69,7 @@ export const Productos = () => {
       >
         Crear Nuevo Instrumento
       </Button>
-
+    )}
       <Select
         value={selectedCategoria}
         onChange={(event: SelectChangeEvent) => {
@@ -83,23 +88,25 @@ export const Productos = () => {
 
       {data.filter((item: Instrumento) => selectedCategoria === "todos" || item.categoria?.id?.toString() === selectedCategoria).map((item: Instrumento) => (
         <>
-          <Card key={item.id} variant="outlined" sx={{ maxWidth: 1300, margin: "20px", display: 'flex' }}>
+          <Card key={item.id} variant="outlined" sx={{ maxWidth: 1300, margin: "20px"}}>
             <InstrumentoCard key={item.id} item={item} />
-            <Button style={{marginLeft: 10}}
+            {role === 'Admin' && (
+            <Button 
               onClick={() => {
                 handleSelection(item);
                 handleOpen();
               }}
             >
               Editar
-            </Button>
+            </Button>)}
+            {role === 'Admin' && (
             <Button style={{margin: 10}}
               onClick={() => {
                 handleDelete(item);
               }}
             >
               Eliminar
-            </Button>
+            </Button>)}
           </Card>
         </>
       ))}
@@ -126,5 +133,7 @@ export const Productos = () => {
         </Box>
       </Modal>
     </>
+    </FadeInContent>
   );
 };
+export default Productos;

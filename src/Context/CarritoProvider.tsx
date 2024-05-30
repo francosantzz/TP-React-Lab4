@@ -1,29 +1,28 @@
-import React, { useState, ReactNode, useEffect } from 'react';
-import { CarritoContext, CarritoItemType } from './CarritoContext';
-import { InstrumentoProps } from "../Types/InstrumentoProps";
+import React, { useState, useEffect, ReactNode } from 'react';
+import { InstrumentoProps } from '../Types/InstrumentoProps';
+import { CarritoItemType, CarritoContext } from './CarritoContext';
+import { useAuth } from './AuthContext';
 
 type CarritoProviderProps = {
   children: ReactNode;
 };
 
-export const CarritoProvider: React.FC<CarritoProviderProps> = ({ children }) => {
-    const [carrito, setCarrito] = useState<CarritoItemType[]>(() => {
-        const carritoGuardado = localStorage.getItem('carrito');
-        return carritoGuardado ? JSON.parse(carritoGuardado) : [];
-      });
+export const CarritoProvider = ({ children }: { children: ReactNode }) => {
+  const { username } = useAuth();
+  const [carrito, setCarrito] = useState<CarritoItemType[]>([]);
 
-  // Cargar los ítems del carrito desde LocalStorage al iniciar
   useEffect(() => {
-    const carritoGuardado = localStorage.getItem('carrito');
-    if (carritoGuardado) {
-      setCarrito(JSON.parse(carritoGuardado));
+    const storedCarrito = localStorage.getItem(`carrito_${username}`);
+    if (storedCarrito) {
+      setCarrito(JSON.parse(storedCarrito));
     }
-  }, []);
+  }, [username]);
 
-  // Guardar los ítems del carrito en LocalStorage cada vez que cambie
   useEffect(() => {
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-  }, [carrito]);
+    if (username) {
+      localStorage.setItem(`carrito_${username}`, JSON.stringify(carrito));
+    }
+  }, [carrito, username]);
 
 
   const agregarAlCarrito = (item: InstrumentoProps["item"]) => {
