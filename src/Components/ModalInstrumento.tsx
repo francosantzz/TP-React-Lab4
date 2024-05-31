@@ -1,11 +1,11 @@
 import { Field, Form, Formik, FormikHelpers } from "formik";
-import { Categoria, Instrumento } from "../Types/InstrumentoProps";
+import { Categoria, InstrumentoNoItem } from "../Types/InstrumentoProps";
 import { Box, Button, MenuItem, Select, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getData, postData, putData } from "../api/genericCalls";
 
 interface FormInstrumentoProps {
-    existingInstrumento?: Instrumento;
+    existingInstrumento?: InstrumentoNoItem;
     onClose: () => void;
 }
 
@@ -14,20 +14,20 @@ export const ModalInstrumento: React.FC<FormInstrumentoProps> = ({
     onClose,
 }) => {
     const handleSubmit = async (
-        values: Instrumento, // Cambia el tipo de 'values'
-        formikHelpers: FormikHelpers<Instrumento>
+        values: InstrumentoNoItem, // Cambia el tipo de 'values'
+        formikHelpers: FormikHelpers<InstrumentoNoItem>
     ) => {
         try {
             if (existingInstrumento) {
                 // Si existingInstrumento está definida, estamos editando un instrumento existente
                 //await editarInstrumento(values.item);
-                await putData<Instrumento>("http://localhost:8080/instrumento/"+values.id, values)
+                await putData<InstrumentoNoItem>("http://localhost:8080/instrumento/"+values.id, values)
 
 
 
             } else {
                 // Si existingInstrumento no está definida, estamos creando un nuevo instrumento
-                await postData<Instrumento>("http://localhost:8080/instrumento/create", values)
+                await postData<InstrumentoNoItem>("http://localhost:8080/instrumento/create", values)
             }
             onClose();
         } catch (error) {

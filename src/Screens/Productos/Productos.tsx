@@ -3,15 +3,15 @@ import { InstrumentoCard } from "../../Components/Instrumento/Instrumento";
 import { Box, Button, Card, Modal, Select, MenuItem, SelectChangeEvent } from "@mui/material";
 import React from "react";
 import { ModalInstrumento } from "../../Components/ModalInstrumento";
-import { Categoria, Instrumento } from "../../Types/InstrumentoProps";
+import { Categoria, InstrumentoNoItem } from "../../Types/InstrumentoProps";
 import { deleteData, getData } from "../../api/genericCalls";
 import { useAuth } from "../../Context/AuthContext";
 import FadeInContent from "../FadeInContent";
 
 const Productos: React.FC = () => {
-  const [data, setData] = useState<Instrumento[]>([]);
+  const [data, setData] = useState<InstrumentoNoItem[]>([]);
   const [open, setOpen] = React.useState(false);
-  const [selectedInstrumento, setselectedInstrumento] = useState<Instrumento | undefined>(undefined);
+  const [selectedInstrumento, setselectedInstrumento] = useState<InstrumentoNoItem | undefined>(undefined);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [selectedCategoria, setSelectedCategoria] = useState<string>("todos");
   const { role } = useAuth();
@@ -33,12 +33,12 @@ const Productos: React.FC = () => {
     setselectedInstrumento(undefined);
   };
 
-  const handleSelection = (instrumento: Instrumento) => {
+  const handleSelection = (instrumento: InstrumentoNoItem) => {
     setselectedInstrumento(instrumento);
   };
 
-  const handleDelete = async (instruemento: Instrumento) => {
-    await deleteData("http://localhost:8080/instrumento/" + instruemento.id);
+  const handleDelete = async (instrumento: InstrumentoNoItem) => {
+    await deleteData("http://localhost:8080/instrumento/" + instrumento.id);
     handleClose();
   }
 
@@ -58,82 +58,77 @@ const Productos: React.FC = () => {
 
   return (
     <FadeInContent>
-    <>
-    {role === 'Admin' && (
-      <Button
-        sx={{ margin: "25px" }}
-        onClick={() => {
-          handleNew();
-          handleOpen();
-        }}
-      >
-        Crear Nuevo Instrumento
-      </Button>
-    )}
-      <Select
-        value={selectedCategoria}
-        onChange={(event: SelectChangeEvent) => {
-          setSelectedCategoria(event.target.value);
-        }}
-      >
-        <MenuItem value="todos">
-          Todos
-        </MenuItem>
-        {categorias.map((categoria: Categoria) => (
-          <MenuItem key={categoria.id?.toString() ?? ""} value={categoria.id?.toString() ?? ""}>
-            {categoria.denominacion}
-          </MenuItem>
-        ))}
-      </Select>
-
-      {data.filter((item: Instrumento) => selectedCategoria === "todos" || item.categoria?.id?.toString() === selectedCategoria).map((item: Instrumento) => (
-        <>
-          <Card key={item.id} variant="outlined" sx={{ maxWidth: 1300, margin: "20px"}}>
-            <InstrumentoCard key={item.id} item={item} />
-            {role === 'Admin' && (
-            <Button 
-              onClick={() => {
-                handleSelection(item);
-                handleOpen();
-              }}
-            >
-              Editar
-            </Button>)}
-            {role === 'Admin' && (
-            <Button style={{margin: 10}}
-              onClick={() => {
-                handleDelete(item);
-              }}
-            >
-              Eliminar
-            </Button>)}
-          </Card>
-        </>
-      ))}
-
-      {/* Renderiza el modal si está abierto */}
-      <Modal open={open} onClose={handleClose}>
-        <Box
-          sx={{
-            width: "50%",
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            p: 4,
-            borderRadius: "10px",
+      <>
+        {role === 'Admin' && (
+          <Button
+            sx={{ margin: "25px", backgroundColor: '#4e342e', color: 'white', '&:hover': {
+              backgroundColor: 'rgba(78, 52, 46, 0.9)',
+            },}}
+            onClick={() => {
+              handleNew();
+              handleOpen();
+            }}
+          >
+            Crear Nuevo Instrumento
+          </Button>
+        )}
+        <Select
+          value={selectedCategoria}
+          onChange={(event: SelectChangeEvent) => {
+            setSelectedCategoria(event.target.value);
           }}
         >
-          <ModalInstrumento
-            existingInstrumento={selectedInstrumento ? selectedInstrumento : undefined}
-            onClose={handleClose}
-          />
-        </Box>
-      </Modal>
-    </>
+          <MenuItem value="todos">
+            Todos
+          </MenuItem>
+          {categorias.map((categoria: Categoria) => (
+            <MenuItem key={categoria.id?.toString() ?? ""} value={categoria.id?.toString() ?? ""}>
+              {categoria.denominacion}
+            </MenuItem>
+          ))}
+        </Select>
+
+        {data.filter((item: InstrumentoNoItem) => selectedCategoria === "todos" || item.categoria?.id?.toString() === selectedCategoria).map((item: InstrumentoNoItem) => (
+          <Card key={item.id} variant="outlined" sx={{ maxWidth: 1300, margin: "20px" }}>
+            <InstrumentoCard 
+              key={item.id} 
+              item={item} 
+              role={role} 
+              onEdit={() => {
+                handleSelection(item);
+                handleOpen();
+              }} 
+              onDelete={() => {
+                handleDelete(item);
+              }}
+            />
+          </Card>
+        ))}
+
+        {/* Renderiza el modal si está abierto */}
+        <Modal open={open} onClose={handleClose}>
+          <Box
+            sx={{
+              width: "50%",
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              p: 4,
+              borderRadius: "10px",
+            }}
+          >
+            <ModalInstrumento
+              existingInstrumento={selectedInstrumento ? selectedInstrumento : undefined}
+              onClose={handleClose}
+            />
+          </Box>
+        </Modal>
+      </>
     </FadeInContent>
   );
 };
+
 export default Productos;

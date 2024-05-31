@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode, useContext, useEffect } from 'react';
+import React, { createContext, useState, ReactNode, useContext } from 'react';
 
 interface AuthContextType {
   isLoggedIn: boolean;

@@ -13,8 +13,27 @@ const Carrito: React.FC = () => {
         return total + (Number(precio) + costoEnvioNumerico) * cantidad;
     }, 0);
 
+    const actualizarCantidadVendida = async (instrumentoId: number, cantidad: number) => {
+        try {
+            const response = await fetch(`http://localhost:8080/instrumento/update-vendidos/${instrumentoId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ cantidadVendida: cantidad }),
+            });
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Error al actualizar la cantidad vendida: ${errorText}`);
+            }
+            console.log(`Cantidad vendida actualizada para instrumento ${instrumentoId}: ${cantidad}`);
+        } catch (error) {
+            console.error(`Error actualizando la cantidad vendida para instrumento ${instrumentoId}:`, error);
+        }
+    };
+
     const realizarPedido = async () => {
-         // Crear el pedido sin detalles primero
+        // Crear el pedido sin detalles primero
         const pedido: Pedido = {
             fechaPedido: new Date(),
             totalPedido: precioTotal,
@@ -59,6 +78,11 @@ const Carrito: React.FC = () => {
 
             console.log("Detalles del pedido creados con éxito:", dataDetalle);
 
+            // Actualizar la cantidad vendida de cada instrumento
+            for (const detalle of detallesPedido) {
+                await actualizarCantidadVendida(detalle.instrumento.id, detalle.cantidad);
+            }
+
             // Realizar el pago con Mercado Pago
             const apiResponsePago = await fetch("http://localhost:8080/mercadopago/create-preference", {
                 method: 'POST',
@@ -74,6 +98,8 @@ const Carrito: React.FC = () => {
 
             // Mostrar alerta con el id del pedido guardado
             alert(`El pedido con id ${pedidoId} se guardó correctamente`);
+
+            // Vaciar el carrito después de realizar el pedido y actualizar las cantidades vendidas
             vaciarCarrito();
 
         } catch (error) {
@@ -83,55 +109,55 @@ const Carrito: React.FC = () => {
 
     return (
         <FadeInContent>
-        <Box>
-            <Typography variant="h4">Carrito</Typography>
-            {carrito.length === 0 ? (
-                <Typography variant="body1">No se han agregado items al carrito</Typography>
-            ) : (
-                carrito.map(({ id, instrumento, marca, modelo, precio, cantidad, costoEnvio }) => {
-                    const costoEnvioNumerico = costoEnvio === 'G' ? '0' : costoEnvio;
-                    const precioTotalItem = (Number(precio) + Number(costoEnvioNumerico)) * cantidad;
+            <Box>
+                <Typography variant="h4">Carrito</Typography>
+                {carrito.length === 0 ? (
+                    <Typography variant="body1">No se han agregado items al carrito</Typography>
+                ) : (
+                    carrito.map(({ id, instrumento, marca, modelo, precio, cantidad, costoEnvio }) => {
+                        const costoEnvioNumerico = costoEnvio === 'G' ? '0' : costoEnvio;
+                        const precioTotalItem = (Number(precio) + Number(costoEnvioNumerico)) * cantidad;
 
-                    return (
-                        <Card key={id} sx={{ marginBottom: 2 }}>
-                            <CardContent>
-                                <Typography variant="h6">{instrumento}</Typography>
-                                <Typography variant="body1">Marca: {marca}</Typography>
-                                <Typography variant="body1">Modelo: {modelo}</Typography>
-                                <Typography variant="body1">Precio: ${precio}</Typography>
-                                <Typography variant="body1">Costo de envío: {costoEnvioNumerico === '0' ? 'Gratis' : `$${costoEnvioNumerico}`}</Typography>
-                                <Typography variant="body1">Cantidad: {cantidad}</Typography>
-                                <Typography variant="body1">Precio total: ${precioTotalItem}</Typography>
-                                <Button
-                                    variant="contained"
-                                    color="secondary"
-                                    onClick={() => eliminarDelCarrito(id)}
-                                    sx={{ marginTop: 2 }}
-                                >
-                                    Eliminar
-                                </Button>
-                            </CardContent>
-                        </Card>
-                    );
-                })
-            )}
-            <Typography variant="h5">Precio total: ${precioTotal}</Typography>
-            <Button
-                variant="contained"
-                color="primary"
-                disabled={carrito.length === 0}
-                sx={{
-                    '&:hover': {
-                        backgroundColor: 'white',
-                        color: '#1976D2',
-                    },
-                }}
-                onClick={realizarPedido}
-            >
-                Realizar pedido
-            </Button>
-        </Box>
-    </FadeInContent>
+                        return (
+                            <Card key={id} sx={{ marginBottom: 2 }}>
+                                <CardContent>
+                                    <Typography variant="h6">{instrumento}</Typography>
+                                    <Typography variant="body1">Marca: {marca}</Typography>
+                                    <Typography variant="body1">Modelo: {modelo}</Typography>
+                                    <Typography variant="body1">Precio: ${precio}</Typography>
+                                    <Typography variant="body1">Costo de envío: {costoEnvioNumerico === '0' ? 'Gratis' : `$${costoEnvioNumerico}`}</Typography>
+                                    <Typography variant="body1">Cantidad: {cantidad}</Typography>
+                                    <Typography variant="body1">Precio total: ${precioTotalItem}</Typography>
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        onClick={() => eliminarDelCarrito(id)}
+                                        sx={{ marginTop: 2 }}
+                                    >
+                                        Eliminar
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        );
+                    })
+                )}
+                <Typography variant="h5">Precio total: ${precioTotal}</Typography>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={carrito.length === 0}
+                    sx={{
+                        '&:hover': {
+                            backgroundColor: 'white',
+                            color: '#1976D2',
+                        },
+                    }}
+                    onClick={realizarPedido}
+                >
+                    Realizar pedido
+                </Button>
+            </Box>
+        </FadeInContent>
     );
 };
 export default Carrito;
