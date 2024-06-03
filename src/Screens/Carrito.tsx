@@ -1,161 +1,140 @@
-import React, { useContext, useState } from 'react';
-import { Box, Typography, Card, CardContent, Button } from '@mui/material';
+import React, { useContext, useState, useEffect } from 'react';
+import { Box, Typography, Card, CardContent, Button, Grid, CardMedia } from '@mui/material';
 import { CarritoContext } from '../Context/CarritoContext';
 import { Pedido, PedidoDetalle } from '../Types/InstrumentoProps';
 import FadeInContent from './FadeInContent';
 
 const Carrito: React.FC = () => {
-    const { carrito, eliminarDelCarrito, vaciarCarrito } = useContext(CarritoContext);
-    const [pedidoGuardadoId, setPedidoGuardadoId] = useState<string | null>(null);
+    const { carrito, vaciarCarrito, eliminarDelCarrito } = useContext(CarritoContext);
+    const [precioTotal, setPrecioTotal] = useState(0);
 
-    const precioTotal = carrito.reduce((total, { precio, cantidad, costoEnvio }) => {
-        const costoEnvioNumerico = costoEnvio === 'G' ? 0 : Number(costoEnvio);
-        return total + (Number(precio) + costoEnvioNumerico) * cantidad;
-    }, 0);
+    useEffect(() => {
+        const totalProductos = carrito.reduce((sum, { precio, cantidad }) => sum + (Number(precio) * cantidad), 0);
+        const totalCantidad = carrito.reduce((sum, { cantidad }) => sum + cantidad, 0);
 
-    const actualizarCantidadVendida = async (instrumentoId: number, cantidad: number) => {
-        try {
-            const response = await fetch(`http://localhost:8080/instrumento/update-vendidos/${instrumentoId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ cantidadVendida: cantidad }),
-            });
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Error al actualizar la cantidad vendida: ${errorText}`);
-            }
-            console.log(`Cantidad vendida actualizada para instrumento ${instrumentoId}: ${cantidad}`);
-        } catch (error) {
-            console.error(`Error actualizando la cantidad vendida para instrumento ${instrumentoId}:`, error);
-        }
-    };
+        const costoEnvioTotal = carrito.reduce((max, { costoEnvio }) => {
+            const costoEnvioNumerico = costoEnvio === 'G' ? 0 : Number(costoEnvio);
+            return Math.max(max, costoEnvioNumerico);
+        }, 0);
+
+        const totalConEnvio = totalProductos + costoEnvioTotal;
+
+        setPrecioTotal(totalConEnvio);
+    }, [carrito]);
 
     const realizarPedido = async () => {
-        // Crear el pedido sin detalles primero
         const pedido: Pedido = {
             fechaPedido: new Date(),
             totalPedido: precioTotal,
-            detalles: []
-        };
-
-        const optionsPedido = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(pedido)
+            detalles: carrito.map(({ id, cantidad, ...resto }) => ({
+                cantidad,
+                instrumento: { id, ...resto }
+            }))
         };
 
         try {
-            // Crear el pedido y obtener el ID del pedido creado
-            const apiResponsePedido = await fetch("http://localhost:8080/pedido/create", optionsPedido);
-            const dataPedido = await apiResponsePedido.json();
-
-            console.log("Pedido creado con éxito:", dataPedido);
-            const pedidoId = dataPedido.id;
-            setPedidoGuardadoId(pedidoId);
-
-            // Crear los detalles del pedido con el pedidoId
-            const detallesPedido: PedidoDetalle[] = carrito.map(({ id, cantidad, instrumento, marca, modelo, imagen, precio, costoEnvio, cantidadVendida, descripcion, categoria }) => ({
-                cantidad: cantidad,
-                instrumento: { id, instrumento, marca, modelo, imagen, precio, costoEnvio, cantidadVendida, descripcion, categoria },
-                pedido: { id: pedidoId }  // Aquí estamos asignando el pedidoId
-            }));
-
-            // Guardar los detalles del pedido en lote
-            const optionsDetalle = {
+            const response = await fetch("http://localhost:8080/pedido/save", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(detallesPedido)
-            };
+                body: JSON.stringify(pedido)
+            });
 
-            const apiResponseDetalle = await fetch("http://localhost:8080/pedido-detalle/create-batch", optionsDetalle);
-            const dataDetalle = await apiResponseDetalle.json();
-
-            console.log("Detalles del pedido creados con éxito:", dataDetalle);
-
-            // Actualizar la cantidad vendida de cada instrumento
-            for (const detalle of detallesPedido) {
-                await actualizarCantidadVendida(detalle.instrumento.id, detalle.cantidad);
+            if (!response.ok) {
+                throw new Error("Error al realizar el pedido");
             }
 
-            // Realizar el pago con Mercado Pago
-            const apiResponsePago = await fetch("http://localhost:8080/mercadopago/create-preference", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(carrito.map(({ instrumento, cantidad, precio }) => ({ instrumento, cantidad, precio: parseFloat(precio) })))
-            });
-            const dataPago = await apiResponsePago.text();
-
-            console.log("Preferencia de pago creada con éxito:", dataPago);
-            window.location.href = dataPago;
-
-            // Mostrar alerta con el id del pedido guardado
-            alert(`El pedido con id ${pedidoId} se guardó correctamente`);
-
-            // Vaciar el carrito después de realizar el pedido y actualizar las cantidades vendidas
+            const data = await response.json();
+            alert(`El pedido con id ${data.id} se guardó correctamente`);
             vaciarCarrito();
 
         } catch (error) {
             console.error("Hubo un error en la solicitud:", error);
+            alert("Hubo un error al realizar el pedido. Por favor, inténtelo de nuevo.");
         }
+
+        const apiResponsePago = await fetch("http://localhost:8080/mercadopago/create-preference", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(carrito.map(({ id, instrumento, cantidad, precio }) => {
+                return {
+                    id,
+                    instrumento,
+                    cantidad,
+                    precio: parseFloat(precio)
+                };
+            }))
+        });
+        const dataPago = await apiResponsePago.text();
+
+        window.location.href = dataPago;
     };
 
     return (
         <FadeInContent>
-            <Box>
-                <Typography variant="h4">Carrito</Typography>
+            <Box sx={{ padding: 2 }}>
+                <Typography variant="h4" gutterBottom sx={{ color: 'black' }}>Carrito</Typography>
                 {carrito.length === 0 ? (
-                    <Typography variant="body1">No se han agregado items al carrito</Typography>
+                    <Typography variant="body1" sx={{ color: 'black' }}>No se han agregado items al carrito</Typography>
                 ) : (
-                    carrito.map(({ id, instrumento, marca, modelo, precio, cantidad, costoEnvio }) => {
-                        const costoEnvioNumerico = costoEnvio === 'G' ? '0' : costoEnvio;
-                        const precioTotalItem = (Number(precio) + Number(costoEnvioNumerico)) * cantidad;
+                    <>
+                        {carrito.map(({ id, instrumento, marca, modelo, precio, cantidad, costoEnvio, imagen }) => {
+                            const costoEnvioNumerico = costoEnvio === 'G' ? 0 : Number(costoEnvio);
+                            const precioTotalItem = Number(precio) * cantidad + costoEnvioNumerico;
 
-                        return (
-                            <Card key={id} sx={{ marginBottom: 2 }}>
-                                <CardContent>
-                                    <Typography variant="h6">{instrumento}</Typography>
-                                    <Typography variant="body1">Marca: {marca}</Typography>
-                                    <Typography variant="body1">Modelo: {modelo}</Typography>
-                                    <Typography variant="body1">Precio: ${precio}</Typography>
-                                    <Typography variant="body1">Costo de envío: {costoEnvioNumerico === '0' ? 'Gratis' : `$${costoEnvioNumerico}`}</Typography>
-                                    <Typography variant="body1">Cantidad: {cantidad}</Typography>
-                                    <Typography variant="body1">Precio total: ${precioTotalItem}</Typography>
-                                    <Button
-                                        variant="contained"
-                                        color="secondary"
-                                        onClick={() => eliminarDelCarrito(id)}
-                                        sx={{ marginTop: 2 }}
-                                    >
-                                        Eliminar
-                                    </Button>
-                                </CardContent>
-                            </Card>
-                        );
-                    })
+                            return (
+                                <Card key={id} sx={{ marginBottom: 2, backgroundColor: '#424242', color: 'white' }}>
+                                    <CardContent>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={12} sm={4} md={3}>
+                                                <CardMedia
+                                                    component="img"
+                                                    height="140"
+                                                    image={imagen}
+                                                    alt={instrumento}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12} sm={8} md={9}>
+                                                <Typography variant="h6">{instrumento}</Typography>
+                                                <Typography variant="body1">Marca: {marca}</Typography>
+                                                <Typography variant="body1">Modelo: {modelo}</Typography>
+                                                <Typography variant="body1">Precio: ${precio}</Typography>
+                                                <Typography variant="body1">Costo de envío: {costoEnvioNumerico === 0 ? 'Gratis' : `$${costoEnvioNumerico}`}</Typography>
+                                                <Typography variant="body1">Cantidad: {cantidad}</Typography>
+                                                <Typography variant="body1">Precio total: ${precioTotalItem}</Typography>
+                                                <Button
+                                                    variant="contained"
+                                                    color="error"
+                                                    onClick={() => eliminarDelCarrito(id)}
+                                                    sx={{ marginTop: 2 }}
+                                                >
+                                                    Eliminar
+                                                </Button>
+                                            </Grid>
+                                        </Grid>
+                                    </CardContent>
+                                </Card>
+                            );
+                        })}
+                        <Box sx={{ marginTop: 3, textAlign: 'right' }}>
+                            <Typography variant="h5" sx={{ color: 'white' }}>Precio total: ${precioTotal}</Typography>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                disabled={carrito.length === 0}
+                                sx={{ backgroundColor: '#4e342e', mr: 1, '&:hover': {
+                                    backgroundColor: 'rgba(78, 52, 46, 0.9)',
+                                  }, }}
+                                onClick={realizarPedido}
+                            >
+                                Realizar pedido
+                            </Button>
+                        </Box>
+                    </>
                 )}
-                <Typography variant="h5">Precio total: ${precioTotal}</Typography>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    disabled={carrito.length === 0}
-                    sx={{
-                        '&:hover': {
-                            backgroundColor: 'white',
-                            color: '#1976D2',
-                        },
-                    }}
-                    onClick={realizarPedido}
-                >
-                    Realizar pedido
-                </Button>
             </Box>
         </FadeInContent>
     );

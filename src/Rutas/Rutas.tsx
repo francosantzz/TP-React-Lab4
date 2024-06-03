@@ -10,6 +10,7 @@ const DondeEstamos = lazy(() => import('../Screens/DondeEstamos/DondeEstamos'));
 const Productos = lazy(() => import('../Screens/Productos/Productos'));
 const DetalleInstrumento = lazy(() => import('../Screens/DetalleInstrumento/DetalleInstrumento'));
 const Carrito = lazy(() => import('../Screens/Carrito'));
+const Charts = lazy(() => import('../Screens/Charts'))
 const Login = lazy(() => import('../Screens/User/Login'));
 const Registro = lazy(() => import('../Screens/User/Registro'));
 
@@ -28,7 +29,7 @@ export const Rutas = () => (
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <Router>
-      <div>
+      <div style={ {backgroundColor: '#f5f5dc', minHeight: '100vh' } } >
         <Navbar />
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
@@ -37,6 +38,7 @@ export const Rutas = () => (
             <Route path="/productos" element={<Productos />} />
             <Route path="/instrumento/:id" element={<DetalleInstrumento />} />
             <Route path="/carrito" element={<ProtectedRoute><Carrito /></ProtectedRoute>} />
+            <Route path="/charts" element={<Charts />} />
             <Route path="/login" element={<Login />} />
             <Route path="/registro" element={<Registro />} />
           </Routes>

@@ -45,11 +45,13 @@ const Navbar = () => {
                 color: 'black',
               },
             },
+            display: 'flex', alignItems: 'center', flexGrow: 1
           }}>
           <Tab label="Home" component={Link} to="/" />
           <Tab label="Productos" component={Link} to="/productos" />
           <Tab label="Donde Estamos" component={Link} to="/donde-estamos" />
           <Tab label="Carrito" component={Link} to="/carrito" />
+          <Tab label="Charts" component={Link} to="/charts" />
         </Tabs>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', ml: 3 }}>
           {isLoggedIn ? (

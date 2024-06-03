@@ -19,7 +19,7 @@ export const InstrumentoCard: React.FC<InstrumentoCardProps> = ({ item, role, on
         alt={item.instrumento}
       />
       <CardContent sx={{ flex: '1 0' }}>
-        <Grid container spacing={1}>
+        <Grid container spacing={1} sx={{ ml: 1 }}>
           <Grid item xs={12}>
             <Typography variant="body2" color="text.primary" fontFamily={"Roboto"} fontSize={"17px"} maxWidth={"50vw"}>
               <h2>{item.instrumento}</h2>
@@ -57,7 +57,7 @@ export const InstrumentoCard: React.FC<InstrumentoCardProps> = ({ item, role, on
           <Link to={`/instrumento/${item.id}`} style={{ textDecoration: 'none' }}>
             <Button variant="contained" size="small" sx={{ backgroundColor: '#4e342e', '&:hover': {
               backgroundColor: 'rgba(78, 52, 46, 0.9)',
-            }, }}>
+            }, ml: 1}}>
               Ver Detalle
             </Button>
           </Link>

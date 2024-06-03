@@ -22,7 +22,7 @@ const DetalleInstrumento = () => {
 
   return (
     <>
-      <h2 style={{ fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif'}}>Detalle del Instrumento {id}:</h2>
+      <h2 style={{ fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif', marginLeft: "5%"}}>Detalle del Instrumento {id}:</h2>
       {item && <InstrumentoCompleto key={item.id} item={item} />}
     </>
   );

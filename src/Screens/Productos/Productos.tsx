@@ -59,50 +59,59 @@ const Productos: React.FC = () => {
   return (
     <FadeInContent>
       <>
-        {role === 'Admin' && (
-          <Button
-            sx={{ margin: "25px", backgroundColor: '#4e342e', color: 'white', '&:hover': {
+      {role === 'Admin' && (
+        <Button
+          sx={{
+            mr: 1,
+            ml: '2%',
+            backgroundColor: '#4e342e',
+            color: 'white',
+            '&:hover': {
               backgroundColor: 'rgba(78, 52, 46, 0.9)',
-            },}}
-            onClick={() => {
-              handleNew();
-              handleOpen();
-            }}
-          >
-            Crear Nuevo Instrumento
-          </Button>
-        )}
-        <Select
-          value={selectedCategoria}
-          onChange={(event: SelectChangeEvent) => {
-            setSelectedCategoria(event.target.value);
+            },
+          }}
+          onClick={() => {
+            handleNew();
+            handleOpen();
           }}
         >
-          <MenuItem value="todos">
-            Todos
+          Crear Nuevo Instrumento
+        </Button>
+      )}
+      <Select
+        value={selectedCategoria}
+        onChange={(event: SelectChangeEvent) => {
+          setSelectedCategoria(event.target.value);
+        }}
+        sx={{ mt: 2, ml: 1 }}
+      >
+        <MenuItem value="todos">
+          Todos
+        </MenuItem>
+        {categorias.map((categoria: Categoria) => (
+          <MenuItem key={categoria.id?.toString() ?? ""} value={categoria.id?.toString() ?? ""}>
+            {categoria.denominacion}
           </MenuItem>
-          {categorias.map((categoria: Categoria) => (
-            <MenuItem key={categoria.id?.toString() ?? ""} value={categoria.id?.toString() ?? ""}>
-              {categoria.denominacion}
-            </MenuItem>
-          ))}
-        </Select>
+        ))}
+      </Select>
+
 
         {data.filter((item: InstrumentoNoItem) => selectedCategoria === "todos" || item.categoria?.id?.toString() === selectedCategoria).map((item: InstrumentoNoItem) => (
-          <Card key={item.id} variant="outlined" sx={{ maxWidth: 1300, margin: "20px" }}>
-            <InstrumentoCard 
-              key={item.id} 
-              item={item} 
-              role={role} 
-              onEdit={() => {
-                handleSelection(item);
-                handleOpen();
-              }} 
-              onDelete={() => {
-                handleDelete(item);
-              }}
-            />
-          </Card>
+          
+          <InstrumentoCard 
+            key={item.id} 
+           item={item} 
+           role={role} 
+           onEdit={() => {
+             handleSelection(item);
+             handleOpen();
+           }} 
+           onDelete={() => {
+             handleDelete(item);
+            }}
+            sx={{ mt: 2, ml: 1 }}
+          />
+         
         ))}
 
         {/* Renderiza el modal si está abierto */}
