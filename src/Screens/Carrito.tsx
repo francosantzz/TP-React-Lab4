@@ -86,7 +86,7 @@ const Carrito: React.FC = () => {
                             const precioTotalItem = Number(precio) * cantidad + costoEnvioNumerico;
 
                             return (
-                                <Card key={id} sx={{ marginBottom: 2, backgroundColor: '#424242', color: 'white' }}>
+                                <Card key={id} sx={{ marginBottom: 2, backgroundColor: '#6a524c', color: 'white' }}>
                                     <CardContent>
                                         <Grid container spacing={2}>
                                             <Grid item xs={12} sm={4} md={3}>
@@ -120,13 +120,13 @@ const Carrito: React.FC = () => {
                             );
                         })}
                         <Box sx={{ marginTop: 3, textAlign: 'right' }}>
-                            <Typography variant="h5" sx={{ color: 'white' }}>Precio total: ${precioTotal}</Typography>
+                            <Typography variant="h5" sx={{ color: 'black', mb: 1 }}>Precio total: ${precioTotal}</Typography>
                             <Button
                                 variant="contained"
                                 color="primary"
                                 disabled={carrito.length === 0}
                                 sx={{ backgroundColor: '#4e342e', mr: 1, '&:hover': {
-                                    backgroundColor: 'rgba(78, 52, 46, 0.9)',
+                                    backgroundColor: 'rgba(78, 52, 46, 0.9)'
                                   }, }}
                                 onClick={realizarPedido}
                             >

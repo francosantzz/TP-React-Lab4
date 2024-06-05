@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import ExcelReport from '../Components/ExcelReport';
 import { Bar, Pie } from 'react-chartjs-2';
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, Typography, Grid } from '@mui/material';
 import { Chart, CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend } from 'chart.js';
 
 Chart.register(CategoryScale, LinearScale, BarElement, ArcElement, Tooltip, Legend);
@@ -38,6 +39,9 @@ const Charts: React.FC = () => {
   return (
     <Container>
         <Typography variant="h4" component="h1" gutterBottom sx={{ mt: 2, }}>Charts</Typography>
+        <Grid item xs={12}>
+                    <ExcelReport />
+                </Grid>
       <Box sx={{ mt: 4, mb: 4, display: "flex", justifyContent: "space-between", alignItems: "center", }}>
             
             <Box sx={{ mt: 4, mb: 4 }}>

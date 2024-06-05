@@ -52,6 +52,7 @@ const Navbar = () => {
           <Tab label="Donde Estamos" component={Link} to="/donde-estamos" />
           <Tab label="Carrito" component={Link} to="/carrito" />
           <Tab label="Charts" component={Link} to="/charts" />
+          <Tab label="Grilla" component={Link} to="/grilla" />
         </Tabs>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', ml: 3 }}>
           {isLoggedIn ? (

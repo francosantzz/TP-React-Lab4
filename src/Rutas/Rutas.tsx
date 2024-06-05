@@ -10,7 +10,8 @@ const DondeEstamos = lazy(() => import('../Screens/DondeEstamos/DondeEstamos'));
 const Productos = lazy(() => import('../Screens/Productos/Productos'));
 const DetalleInstrumento = lazy(() => import('../Screens/DetalleInstrumento/DetalleInstrumento'));
 const Carrito = lazy(() => import('../Screens/Carrito'));
-const Charts = lazy(() => import('../Screens/Charts'))
+const Charts = lazy(() => import('../Screens/Charts'));
+const Grilla = lazy(()=> import('../Screens/Grilla'));
 const Login = lazy(() => import('../Screens/User/Login'));
 const Registro = lazy(() => import('../Screens/User/Registro'));
 
@@ -38,7 +39,8 @@ export const Rutas = () => (
             <Route path="/productos" element={<Productos />} />
             <Route path="/instrumento/:id" element={<DetalleInstrumento />} />
             <Route path="/carrito" element={<ProtectedRoute><Carrito /></ProtectedRoute>} />
-            <Route path="/charts" element={<Charts />} />
+            <Route path="/charts" element={<ProtectedRoute><Charts /></ProtectedRoute>} />
+            <Route path="/grilla" element={<ProtectedRoute><Grilla /></ProtectedRoute>} />
             <Route path="/login" element={<Login />} />
             <Route path="/registro" element={<Registro />} />
           </Routes>
