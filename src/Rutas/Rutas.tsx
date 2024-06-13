@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import React, { Suspense, lazy } from 'react';
 import Navbar from '../Components/Navbar/Navbar';
-import { useAuth } from '../Context/AuthContext';
+import { useAuth, role } from '../Context/AuthContext';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -18,6 +18,10 @@ const Registro = lazy(() => import('../Screens/User/Registro'));
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const { isLoggedIn } = useAuth();
   return isLoggedIn ? children : <Navigate to="/login" />;
+};
+const AdminRoute = ({ children }: { children: JSX.Element }) => {
+  const { isLoggedIn, role } = useAuth();
+  return isLoggedIn && role == "Admin" ? children : <Navigate to="/" />;
 };
 
 const theme = createTheme({
@@ -39,8 +43,8 @@ export const Rutas = () => (
             <Route path="/productos" element={<Productos />} />
             <Route path="/instrumento/:id" element={<DetalleInstrumento />} />
             <Route path="/carrito" element={<ProtectedRoute><Carrito /></ProtectedRoute>} />
-            <Route path="/charts" element={<ProtectedRoute><Charts /></ProtectedRoute>} />
-            <Route path="/grilla" element={<ProtectedRoute><Grilla /></ProtectedRoute>} />
+            <Route path="/charts" element={<AdminRoute><Charts /></AdminRoute>} />
+            <Route path="/grilla" element={<AdminRoute><Grilla /></AdminRoute>} />
             <Route path="/login" element={<Login />} />
             <Route path="/registro" element={<Registro />} />
           </Routes>

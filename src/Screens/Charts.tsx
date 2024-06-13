@@ -39,20 +39,21 @@ const Charts: React.FC = () => {
   return (
     <Container>
         <Typography variant="h4" component="h1" gutterBottom sx={{ mt: 2, }}>Charts</Typography>
-        <Grid item xs={12}>
-                    <ExcelReport />
-                </Grid>
-      <Box sx={{ mt: 4, mb: 4, display: "flex", justifyContent: "space-between", alignItems: "center", }}>
+        <Grid item xs={12} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", }}>
+          <ExcelReport />
+          <Box sx={{ }}>
+                <Typography variant="h6" component="h2" gutterBottom>Pedidos por Mes y Año</Typography>
+                {barError ? <Typography color="error">{barError}</Typography> : barData ? (
+                    <Box sx={{ width: 550 }}>
+                    <Bar data={barData} />
+                    </Box>
+                ) : <Typography>Cargando datos...</Typography>}
+          </Box>
+        </Grid>
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mt: 4 }}>
             
-            <Box sx={{ mt: 4, mb: 4 }}>
-            <Typography variant="h6" component="h2" gutterBottom>Pedidos por Mes y Año</Typography>
-            {barError ? <Typography color="error">{barError}</Typography> : barData ? (
-                <Box sx={{ width: 550, height: 550 }}>
-                <Bar data={barData} />
-                </Box>
-            ) : <Typography>Cargando datos...</Typography>}
-            </Box>
-            <Box sx={{ mt: 4, mb: 4 }}>
+            
+            <Box sx={{ mb: 4 }}>
             <Typography variant="h6" component="h2" gutterBottom>Pedidos por Instrumento</Typography>
             {pieError ? <Typography color="error">{pieError}</Typography> : pieData ? (
                 <Box sx={{ width: 550, height: 550 }}>

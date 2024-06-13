@@ -83,7 +83,7 @@ const Productos: React.FC = () => {
         onChange={(event: SelectChangeEvent) => {
           setSelectedCategoria(event.target.value);
         }}
-        sx={{ mt: 2, ml: 1 }}
+        sx={{ mt: 2, ml: "2%" }}
       >
         <MenuItem value="todos">
           Todos

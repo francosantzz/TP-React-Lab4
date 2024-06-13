@@ -10,7 +10,7 @@ import Toolbar from '@mui/material/Toolbar';
 
 
 const Navbar = () => {
-  const { isLoggedIn, username, logout } = useAuth();
+  const { isLoggedIn, username, logout, role } = useAuth();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -51,8 +51,12 @@ const Navbar = () => {
           <Tab label="Productos" component={Link} to="/productos" />
           <Tab label="Donde Estamos" component={Link} to="/donde-estamos" />
           <Tab label="Carrito" component={Link} to="/carrito" />
+          {isLoggedIn && role === "Admin" && (
           <Tab label="Charts" component={Link} to="/charts" />
+        )}
+        {isLoggedIn && role === "Admin" && (
           <Tab label="Grilla" component={Link} to="/grilla" />
+        )}
         </Tabs>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', ml: 3 }}>
           {isLoggedIn ? (
